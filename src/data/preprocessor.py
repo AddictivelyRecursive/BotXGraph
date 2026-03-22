@@ -44,6 +44,7 @@ class TwiBot22Preprocessor:
         # normalize author (important!)
         if "author_id" in tweets_df.columns:
             tweets_df["author_id"] = tweets_df["author_id"].astype(str)
+            tweets_df["author_id"] = tweets_df["author_id"].replace("None", None)
         else:
             tweets_df["author_id"] = None
 
@@ -59,28 +60,38 @@ class TwiBot22Preprocessor:
         print("Processing edges...")
 
         edges_df = edges.copy()
-
-        # standardize column names (depends on dataset)
         edges_df.columns = [col.lower() for col in edges_df.columns]
 
-        # try common column names
-        possible_src = ["source", "src", "from"]
-        possible_dst = ["target", "dst", "to"]
+        # Handle TwiBot-22 format
+        if "source_id" in edges_df.columns and "target_id" in edges_df.columns:
+            edges_df.rename(
+                columns={
+                    "source_id": "src",
+                    "target_id": "dst",
+                    "relation": "type"
+                },
+                inplace=True
+            )
+        else:
+            # fallback for other datasets
+            possible_src = ["source", "src", "from"]
+            possible_dst = ["target", "dst", "to"]
 
-        src_col = next((c for c in possible_src if c in edges_df.columns), None)
-        dst_col = next((c for c in possible_dst if c in edges_df.columns), None)
+            src_col = next((c for c in possible_src if c in edges_df.columns), None)
+            dst_col = next((c for c in possible_dst if c in edges_df.columns), None)
 
-        assert src_col is not None, "No source column found in edges"
-        assert dst_col is not None, "No target column found in edges"
+            assert src_col is not None, "No source column found in edges"
+            assert dst_col is not None, "No target column found in edges"
 
-        edges_df.rename(columns={src_col: "src", dst_col: "dst"}, inplace=True)
+            edges_df.rename(columns={src_col: "src", dst_col: "dst"}, inplace=True)
 
+            if "type" not in edges_df.columns:
+                edges_df["type"] = "unknown"
+
+        # normalize types
         edges_df["src"] = edges_df["src"].astype(str)
         edges_df["dst"] = edges_df["dst"].astype(str)
-
-        # optional: relation type
-        if "type" not in edges_df.columns:
-            edges_df["type"] = "unknown"
+        edges_df["type"] = edges_df["type"].astype(str)
 
         edges_df = edges_df.drop_duplicates()
 

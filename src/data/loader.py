@@ -35,8 +35,8 @@ class TwiBot22Loader:
         with open(self.user_file, "r", encoding="utf-8") as f:
             users = json.load(f)
 
-        if self.debug and self.max_users:
-            users = users[:self.max_users]
+        # if self.debug and self.max_users:
+        #     users = users[:self.max_users]
 
         print(f"Loaded {len(users)} users")
         return users
@@ -71,10 +71,11 @@ class TwiBot22Loader:
 
     def load_edges(self):
         print("Loading edges...")
-        edges = pd.read_csv(self.edge_file)
 
         if self.debug and self.max_edges:
-            edges = edges.iloc[:self.max_edges]
+            edges = pd.read_csv(self.edge_file, nrows=self.max_edges)
+        else:
+            edges = pd.read_csv(self.edge_file)
 
         print(f"Loaded {len(edges)} edges")
         return edges
