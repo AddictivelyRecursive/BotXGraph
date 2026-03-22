@@ -1,0 +1,8 @@
+paths:
+  raw_data: data/raw/
+
+debug:
+  enabled: true
+  max_users: 1000
+  max_tweets: 2000
+  max_edges: 5000

@@ -1,0 +1,8 @@
+dataset:
+  name: TwiBot-22
+
+  files:
+    users: user.json
+    tweets_pattern: tweet_*.json
+    edges: edge.csv
+    labels: label.csv
