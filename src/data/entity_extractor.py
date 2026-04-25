@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 from urllib.parse import urlparse
 
 
@@ -18,18 +19,26 @@ class EntityExtractor:
         for _, row in tweets_df.iterrows():
             tweet_id = row["id"]
 
+            tags = []
             entities = row.get("entities", {})
-            if not isinstance(entities, dict):
-                continue
 
-            hashtags = entities.get("hashtags", [])
+            if isinstance(entities, dict):
+                for tag_obj in entities.get("hashtags", []):
+                    if isinstance(tag_obj, dict):
+                        tag = tag_obj.get("tag") or tag_obj.get("text")
+                    else:
+                        tag = str(tag_obj)
+                    tags.append(tag)
 
-            for tag_obj in hashtags:
-                tag = tag_obj.get("tag") or tag_obj.get("text")
+            text = row.get("text", "")
+            if not tags and isinstance(text, str):
+                tags.extend(re.findall(r"(?<!\w)#([A-Za-z0-9_]+)", text))
+
+            for tag in tags:
                 if not tag:
                     continue
 
-                tag = tag.lower()
+                tag = str(tag).lower()
 
                 hashtag_nodes.add(tag)
 
@@ -58,14 +67,22 @@ class EntityExtractor:
         for _, row in tweets_df.iterrows():
             tweet_id = row["id"]
 
+            urls = []
             entities = row.get("entities", {})
-            if not isinstance(entities, dict):
-                continue
 
-            urls = entities.get("urls", [])
+            if isinstance(entities, dict):
+                for url_obj in entities.get("urls", []):
+                    if isinstance(url_obj, dict):
+                        url = url_obj.get("expanded_url") or url_obj.get("url")
+                    else:
+                        url = str(url_obj)
+                    urls.append(url)
 
-            for url_obj in urls:
-                url = url_obj.get("expanded_url") or url_obj.get("url")
+            text = row.get("text", "")
+            if not urls and isinstance(text, str):
+                urls.extend(re.findall(r"https?://[^\s]+", text))
+
+            for url in urls:
                 if not url:
                     continue
 
@@ -85,13 +102,13 @@ class EntityExtractor:
                     "url": domain
                 })
 
-            urls_df = pd.DataFrame({"url": list(url_nodes)})
-            url_edges_df = pd.DataFrame(edges,columns=["tweet_id", "url"])
+        urls_df = pd.DataFrame({"url": list(url_nodes)})
+        url_edges_df = pd.DataFrame(edges,columns=["tweet_id", "url"])
 
-            print(f"URLs extracted: {len(urls_df)}")
-            print(f"Tweet-URL edges: {len(url_edges_df)}")
+        print(f"URLs extracted: {len(urls_df)}")
+        print(f"Tweet-URL edges: {len(url_edges_df)}")
 
-            return urls_df, url_edges_df
+        return urls_df, url_edges_df
 
     # ---------------------------
     # FULL PIPELINE

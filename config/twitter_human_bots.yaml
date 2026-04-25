@@ -1,0 +1,10 @@
+dataset:
+  name: twitter-human-bots
+  type: twitter_human_bots
+
+  files:
+    accounts: twitter_human_bots_dataset.csv
+
+  source:
+    primary: https://huggingface.co/datasets/airt-ml/twitter-human-bots
+    download_url: https://huggingface.co/datasets/airt-ml/twitter-human-bots/resolve/main/twitter_human_bots_dataset.csv

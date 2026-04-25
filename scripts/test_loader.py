@@ -1,5 +1,13 @@
+import sys
+from pathlib import Path
+
 import yaml
-from src.data.loader import TwiBot22Loader
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from src.data.loader import get_loader
 from src.data.preprocessor import TwiBot22Preprocessor
 from src.data.entity_extractor import EntityExtractor
 from src.data.graph_builder import GraphBuilder
@@ -18,7 +26,7 @@ def load_config():
 if __name__ == "__main__":
     config = load_config()
     print("\n===== STAGE: LOADING =====")
-    loader = TwiBot22Loader(config)
+    loader = get_loader(config)
     data = loader.load_all()
 
     # print("\n===== LOADER CHECK =====")

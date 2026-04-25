@@ -62,6 +62,11 @@ class TwiBot22Preprocessor:
         edges_df = edges.copy()
         edges_df.columns = [col.lower() for col in edges_df.columns]
 
+        if edges_df.empty:
+            edges_df = pd.DataFrame(columns=["src", "dst", "type"])
+            print("Edges processed: 0")
+            return edges_df
+
         # Handle TwiBot-22 format
         if "source_id" in edges_df.columns and "target_id" in edges_df.columns:
             edges_df.rename(
@@ -122,8 +127,13 @@ class TwiBot22Preprocessor:
         labels_df["id"] = labels_df["id"].astype(str)
 
         # label column
+        if "label" not in labels_df.columns and "account_type" in labels_df.columns:
+            labels_df.rename(columns={"account_type": "label"}, inplace=True)
+
         if "label" not in labels_df.columns:
             raise ValueError("Label column missing")
+
+        labels_df["label"] = labels_df["label"].astype(str).str.lower()
 
         print(f"Labels processed: {len(labels_df)}")
         return labels_df

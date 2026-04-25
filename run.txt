@@ -1,0 +1,2 @@
+python3 scripts/train_fast_bot_baseline.py --download --limit 1000 --output reports/fast_bot_baseline_smoke.md
+python3 scripts/train_fast_bot_baseline.py --output reports/fast_bot_baseline_full.md
