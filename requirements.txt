@@ -5,3 +5,4 @@ ijson
 scikit-learn
 scipy
 torch
+matplotlib

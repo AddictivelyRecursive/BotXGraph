@@ -1,5 +1,7 @@
 import torch
 
+from src.data.text_encoder import TextFeatureEncoder
+
 try:
     from torch_geometric.data import HeteroData
 except ImportError:
@@ -35,6 +37,9 @@ except ImportError:
 class GraphBuilder:
     def __init__(self, config):
         self.config = config
+        feature_cfg = config.get("features", {})
+        self.text_embedding_dim = int(feature_cfg.get("text_embedding_dim", 64))
+        self.text_encoder = TextFeatureEncoder(embedding_dim=self.text_embedding_dim)
 
     # ---------------------------
     # CREATE ID MAPS
@@ -101,7 +106,7 @@ class GraphBuilder:
             "description_length",
         ]
 
-        features = torch.zeros((len(user_map), len(feature_names)), dtype=torch.float)
+        raw_features = torch.zeros((len(user_map), len(feature_names)), dtype=torch.float)
 
         tweet_authors = tweets_df[["id", "author_id"]].dropna().copy()
         tweet_to_author = dict(zip(tweet_authors["id"].astype(str), tweet_authors["author_id"].astype(str)))
@@ -138,9 +143,104 @@ class GraphBuilder:
                 float(description_lengths.get(uid, 0)),
             ])
 
-            features[idx] = torch.tensor(values, dtype=torch.float)
+            raw_features[idx] = torch.tensor(values, dtype=torch.float)
 
-        return features, feature_names
+        features, feature_stats = self._zscore_normalize(raw_features)
+        return features, feature_names, feature_stats
+
+    def build_tweet_features(self, tweets_df, tweet_map):
+        texts = [""] * len(tweet_map)
+        for _, row in tweets_df.iterrows():
+            tid = str(row["id"])
+            if tid not in tweet_map:
+                continue
+            texts[tweet_map[tid]] = row.get("text", "")
+
+        embeddings, source = self.text_encoder.encode(texts)
+        features = torch.tensor(embeddings, dtype=torch.float)
+        feature_names = [f"tweet_text_{i}" for i in range(features.shape[1])]
+        return features, feature_names, source
+
+    def build_url_features(self, urls_df, url_map):
+        feature_names = [
+            "domain_length",
+            "token_count",
+            "subdomain_count",
+            "has_www",
+            "has_digits",
+            "has_hyphen",
+            "is_shortener_like",
+            "tld_is_com",
+            "tld_is_org",
+            "tld_is_net",
+        ]
+        raw_features = torch.zeros((len(url_map), len(feature_names)), dtype=torch.float)
+        shortener_tokens = {"bit", "tinyurl", "t", "goo", "owly", "buff", "short", "lnk", "cutt"}
+
+        for _, row in urls_df.iterrows():
+            domain = str(row["url"]).strip().lower()
+            if domain not in url_map:
+                continue
+
+            parts = [p for p in domain.split(".") if p]
+            tld = parts[-1] if parts else ""
+            idx = url_map[domain]
+            values = [
+                float(len(domain)),
+                float(len(parts)),
+                float(max(0, len(parts) - 2)),
+                1.0 if domain.startswith("www.") else 0.0,
+                1.0 if any(ch.isdigit() for ch in domain) else 0.0,
+                1.0 if "-" in domain else 0.0,
+                1.0 if any(tok in domain for tok in shortener_tokens) else 0.0,
+                1.0 if tld == "com" else 0.0,
+                1.0 if tld == "org" else 0.0,
+                1.0 if tld == "net" else 0.0,
+            ]
+            raw_features[idx] = torch.tensor(values, dtype=torch.float)
+
+        features, feature_stats = self._zscore_normalize(raw_features)
+        return features, feature_names, feature_stats
+
+    def build_hashtag_features(self, hashtags_df, hashtag_map):
+        feature_names = [
+            "hashtag_length",
+            "has_digit",
+            "has_upper_like_token",
+            "token_parts",
+        ]
+        raw_features = torch.zeros((len(hashtag_map), len(feature_names)), dtype=torch.float)
+
+        for _, row in hashtags_df.iterrows():
+            hashtag = str(row["hashtag"]).strip()
+            if hashtag not in hashtag_map:
+                continue
+
+            token_parts = [part for part in hashtag.replace("_", " ").split() if part]
+            values = [
+                float(len(hashtag)),
+                1.0 if any(ch.isdigit() for ch in hashtag) else 0.0,
+                1.0 if any(ch.isalpha() and ch.isupper() for ch in hashtag) else 0.0,
+                float(len(token_parts) if token_parts else 1),
+            ]
+            raw_features[hashtag_map[hashtag]] = torch.tensor(values, dtype=torch.float)
+
+        features, feature_stats = self._zscore_normalize(raw_features)
+        return features, feature_names, feature_stats
+
+    def _zscore_normalize(self, features):
+        if features.numel() == 0:
+            return features, {"mean": [], "std": []}
+
+        mean = features.mean(dim=0)
+        std = features.std(dim=0, unbiased=False)
+        std = torch.where(std < 1e-6, torch.ones_like(std), std)
+        normalized = (features - mean) / std
+        stats = {
+            "mean": [float(x) for x in mean.tolist()],
+            "std": [float(x) for x in std.tolist()],
+        }
+        return normalized, stats
 
     def _count_entities_by_user(self, entity_edges_df, entity_column, tweet_to_author):
         counts = {}
@@ -226,7 +326,7 @@ class GraphBuilder:
         data["hashtag"].num_nodes = len(hashtag_map)
         data["url"].num_nodes = len(url_map)
 
-        user_x, feature_names = self.build_user_features(
+        user_x, feature_names, user_feature_stats = self.build_user_features(
             users_df,
             tweets_df,
             hashtag_edges_df,
@@ -235,6 +335,22 @@ class GraphBuilder:
         )
         data["user"].x = user_x
         data["user"].feature_names = feature_names
+        data["user"].feature_stats = user_feature_stats
+
+        tweet_x, tweet_feature_names, tweet_feature_source = self.build_tweet_features(tweets_df, tweet_map)
+        data["tweet"].x = tweet_x
+        data["tweet"].feature_names = tweet_feature_names
+        data["tweet"].feature_source = tweet_feature_source
+
+        hashtag_x, hashtag_feature_names, hashtag_feature_stats = self.build_hashtag_features(hashtags_df, hashtag_map)
+        data["hashtag"].x = hashtag_x
+        data["hashtag"].feature_names = hashtag_feature_names
+        data["hashtag"].feature_stats = hashtag_feature_stats
+
+        url_x, url_feature_names, url_feature_stats = self.build_url_features(urls_df, url_map)
+        data["url"].x = url_x
+        data["url"].feature_names = url_feature_names
+        data["url"].feature_stats = url_feature_stats
 
         print("Node counts:")
         print(data)

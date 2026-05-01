@@ -1,2 +1,127 @@
-python3 scripts/train_fast_bot_baseline.py --download --limit 1000 --output reports/fast_bot_baseline_smoke.md
-python3 scripts/train_fast_bot_baseline.py --output reports/fast_bot_baseline_full.md
+
+===== STAGE: LOADING =====
+Loading Twitter Human-Bots accounts...
+Loaded 37438 accounts
+Creating synthetic profile-description tweets...
+Created 37438 synthetic tweets
+
+===== STAGE: PREPROCESSING =====
+Processing users...
+Users processed: 37438
+Processing tweets...
+Tweets processed: 37438
+Processing edges...
+Edges processed: 0
+Processing labels...
+Labels processed: 37438
+
+===== STAGE: ENTITY EXTRACTION =====
+Extracting hashtags...
+Hashtags extracted: 7211
+Tweet-Hashtag edges: 10862
+Extracting URLs...
+URLs extracted: 10
+Tweet-URL edges: 4774
+
+===== STAGE: EDGE AUGMENTATION =====
+Building augmented user-user edges...
+Augmented edges created: 753386
+  - similar_profile: 748760
+  - co_hashtag: 4618
+  - co_url: 8
+Total user-user edges after augmentation: 753386
+
+===== STAGE: GRAPH BUILDING =====
+Building Heterogeneous Graph...
+Building ID maps...
+Node counts:
+HeteroData(user={ num_nodes=37438 }, tweet={ num_nodes=37438 }, hashtag={ num_nodes=7211 }, url={ num_nodes=10 })
+Processing labels...
+Graph construction complete.
+
+===== GRAPH SUMMARY =====
+{'user_nodes': 37438, 'tweet_nodes': 37438, 'hashtag_nodes': 7211, 'url_nodes': 10, 'tweet_feature_source': 'tfidf_svd_fallback', 'user_feature_names': ['log1p_followers_count', 'log1p_friends_count', 'log1p_statuses_count', 'log1p_favourites_count', 'average_tweets_per_day', 'account_age_days', 'verified', 'geo_enabled', 'default_profile', 'default_profile_image', 'hashtag_count', 'url_count', 'description_length'], 'edge_counts': {('user', 'co_hashtag', 'user'): 4618, ('user', 'rev_co_hashtag', 'user'): 4618, ('user', 'co_url', 'user'): 8, ('user', 'rev_co_url', 'user'): 8, ('user', 'similar_profile', 'user'): 748760, ('user', 'rev_similar_profile', 'user'): 748760, ('user', 'posts', 'tweet'): 37438, ('tweet', 'rev_posts', 'user'): 37438, ('tweet', 'contains', 'hashtag'): 10862, ('hashtag', 'rev_contains', 'tweet'): 10862, ('tweet', 'links', 'url'): 4774, ('url', 'rev_links', 'tweet'): 4774}}
+
+===== STAGE: TRAINING HETERO-GNN =====
+Epoch 001 | loss=0.8183 | val_acc=0.5778 | val_macro_f1=0.5624
+Epoch 002 | loss=0.7112 | val_acc=0.7297 | val_macro_f1=0.7122
+Epoch 004 | loss=0.5946 | val_acc=0.7648 | val_macro_f1=0.7487
+Epoch 006 | loss=0.5459 | val_acc=0.7717 | val_macro_f1=0.7551
+Epoch 008 | loss=0.5241 | val_acc=0.7787 | val_macro_f1=0.7622
+Epoch 010 | loss=0.5139 | val_acc=0.7863 | val_macro_f1=0.7701
+Epoch 012 | loss=0.5020 | val_acc=0.7910 | val_macro_f1=0.7748
+Epoch 014 | loss=0.4934 | val_acc=0.7958 | val_macro_f1=0.7795
+Epoch 016 | loss=0.4805 | val_acc=0.7981 | val_macro_f1=0.7822
+Epoch 018 | loss=0.4742 | val_acc=0.7974 | val_macro_f1=0.7818
+Epoch 020 | loss=0.4713 | val_acc=0.7974 | val_macro_f1=0.7823
+Epoch 022 | loss=0.4661 | val_acc=0.7970 | val_macro_f1=0.7820
+Epoch 024 | loss=0.4596 | val_acc=0.7999 | val_macro_f1=0.7844
+Epoch 026 | loss=0.4530 | val_acc=0.8018 | val_macro_f1=0.7865
+Epoch 028 | loss=0.4475 | val_acc=0.8020 | val_macro_f1=0.7870
+Epoch 030 | loss=0.4413 | val_acc=0.8027 | val_macro_f1=0.7879
+Epoch 032 | loss=0.4356 | val_acc=0.8031 | val_macro_f1=0.7885
+Epoch 034 | loss=0.4301 | val_acc=0.8036 | val_macro_f1=0.7888
+Epoch 036 | loss=0.4275 | val_acc=0.8061 | val_macro_f1=0.7917
+Epoch 038 | loss=0.4213 | val_acc=0.8104 | val_macro_f1=0.7955
+Epoch 040 | loss=0.4157 | val_acc=0.8118 | val_macro_f1=0.7963
+Epoch 042 | loss=0.4103 | val_acc=0.8093 | val_macro_f1=0.7947
+Epoch 044 | loss=0.4063 | val_acc=0.8150 | val_macro_f1=0.7996
+Epoch 046 | loss=0.4016 | val_acc=0.8143 | val_macro_f1=0.8001
+Epoch 048 | loss=0.3993 | val_acc=0.8203 | val_macro_f1=0.8052
+Epoch 050 | loss=0.3930 | val_acc=0.8198 | val_macro_f1=0.8050
+Epoch 052 | loss=0.3888 | val_acc=0.8239 | val_macro_f1=0.8089
+Epoch 054 | loss=0.3870 | val_acc=0.8285 | val_macro_f1=0.8131
+Epoch 056 | loss=0.3838 | val_acc=0.8267 | val_macro_f1=0.8121
+Epoch 058 | loss=0.3801 | val_acc=0.8312 | val_macro_f1=0.8159
+Epoch 060 | loss=0.3752 | val_acc=0.8308 | val_macro_f1=0.8158
+Epoch 062 | loss=0.3734 | val_acc=0.8342 | val_macro_f1=0.8187
+Epoch 064 | loss=0.3704 | val_acc=0.8373 | val_macro_f1=0.8222
+Epoch 066 | loss=0.3651 | val_acc=0.8424 | val_macro_f1=0.8269
+Epoch 068 | loss=0.3646 | val_acc=0.8397 | val_macro_f1=0.8252
+Epoch 070 | loss=0.3604 | val_acc=0.8440 | val_macro_f1=0.8288
+Epoch 072 | loss=0.3582 | val_acc=0.8462 | val_macro_f1=0.8319
+Epoch 074 | loss=0.3541 | val_acc=0.8474 | val_macro_f1=0.8325
+Epoch 076 | loss=0.3525 | val_acc=0.8474 | val_macro_f1=0.8327
+Epoch 078 | loss=0.3490 | val_acc=0.8463 | val_macro_f1=0.8323
+Epoch 080 | loss=0.3477 | val_acc=0.8520 | val_macro_f1=0.8370
+Epoch 082 | loss=0.3448 | val_acc=0.8517 | val_macro_f1=0.8374
+Epoch 084 | loss=0.3406 | val_acc=0.8519 | val_macro_f1=0.8373
+Epoch 086 | loss=0.3395 | val_acc=0.8559 | val_macro_f1=0.8414
+Epoch 088 | loss=0.3329 | val_acc=0.8565 | val_macro_f1=0.8415
+Epoch 090 | loss=0.3348 | val_acc=0.8526 | val_macro_f1=0.8384
+Epoch 092 | loss=0.3318 | val_acc=0.8556 | val_macro_f1=0.8412
+Epoch 094 | loss=0.3311 | val_acc=0.8595 | val_macro_f1=0.8451
+Epoch 096 | loss=0.3274 | val_acc=0.8554 | val_macro_f1=0.8416
+Epoch 098 | loss=0.3262 | val_acc=0.8588 | val_macro_f1=0.8444
+Epoch 100 | loss=0.3228 | val_acc=0.8599 | val_macro_f1=0.8457
+Epoch 102 | loss=0.3238 | val_acc=0.8577 | val_macro_f1=0.8439
+Epoch 104 | loss=0.3206 | val_acc=0.8604 | val_macro_f1=0.8454
+Epoch 106 | loss=0.3190 | val_acc=0.8588 | val_macro_f1=0.8447
+Epoch 108 | loss=0.3166 | val_acc=0.8599 | val_macro_f1=0.8455
+Epoch 110 | loss=0.3170 | val_acc=0.8584 | val_macro_f1=0.8448
+Epoch 112 | loss=0.3153 | val_acc=0.8577 | val_macro_f1=0.8433
+Epoch 114 | loss=0.3122 | val_acc=0.8604 | val_macro_f1=0.8462
+Epoch 116 | loss=0.3123 | val_acc=0.8568 | val_macro_f1=0.8432
+Epoch 118 | loss=0.3090 | val_acc=0.8634 | val_macro_f1=0.8489
+Epoch 120 | loss=0.3076 | val_acc=0.8600 | val_macro_f1=0.8463
+
+===== TEST METRICS =====
+Accuracy: 0.8634
+Macro-F1: 0.8493
+Bot precision: 0.7698
+Bot recall: 0.8396
+Confusion matrix [human, bot]:
+[[3284  468]
+ [ 299 1565]]
+
+===== STAGE: GENERATING PLOTS =====
+Saved plot: reports/plots/hetero_gnn_full/training_curves.png
+Saved plot: reports/plots/hetero_gnn_full/edge_type_counts.png
+Saved plot: reports/plots/hetero_gnn_full/confusion_matrix.png
+Saved plot: reports/plots/hetero_gnn_full/feature_saliency.png
+Saved plot: reports/plots/hetero_gnn_full/relation_importance.png
+Saved plot: reports/plots/hetero_gnn_full/graph_schema.png
+Saved plot: reports/plots/hetero_gnn_full/user_projection.png
+Saved plot: reports/plots/hetero_gnn_full/similarity_subgraph.png
+
+Saved report to reports/hetero_gnn_full.md

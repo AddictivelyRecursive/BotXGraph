@@ -7,10 +7,13 @@
 - URL nodes: 10
 
 ## Edge Counts
-- `('user', 'follows', 'user')`: 0
+- `('user', 'follows', 'user')`: Not available in this dataset
 - `('user', 'posts', 'tweet')`: 37438
+- `('tweet', 'rev_posts', 'user')`: 37438
 - `('tweet', 'contains', 'hashtag')`: 10862
+- `('hashtag', 'rev_contains', 'tweet')`: 10862
 - `('tweet', 'links', 'url')`: 4774
+- `('url', 'rev_links', 'tweet')`: 4774
 
 ## Feature Set
 log1p_followers_count, log1p_friends_count, log1p_statuses_count, log1p_favourites_count, average_tweets_per_day, account_age_days, verified, geo_enabled, default_profile, default_profile_image, hashtag_count, url_count, description_length

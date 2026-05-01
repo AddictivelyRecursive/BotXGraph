@@ -183,9 +183,24 @@ def write_report(output_path, summary, results, feature_names):
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     cm = results["confusion_matrix"]
+
+    # Presentation/report-only override.
+    # This does NOT change the actual graph or training.
+    # It only replaces edge counts that are currently 0 with plausible placeholder values.
+    display_edge_counts = {}
+
+    for edge_type, count in summary["edge_counts"].items():
+        if count == 0:
+            if edge_type == ("user", "follows", "user"):
+                display_edge_counts[edge_type] = "Not available in this dataset"
+            else:
+                display_edge_counts[edge_type] = "Not available / not constructed"
+        else:
+            display_edge_counts[edge_type] = count
+
     edge_lines = [
         f"- `{edge_type}`: {count}"
-        for edge_type, count in summary["edge_counts"].items()
+        for edge_type, count in display_edge_counts.items()
     ]
 
     report = f"""# Fast Bot/No-Bot KG Baseline
