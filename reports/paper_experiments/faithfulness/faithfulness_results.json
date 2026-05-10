@@ -1,0 +1,66 @@
+{
+  "top_features": [
+    "log1p_favourites_count",
+    "log1p_followers_count",
+    "average_tweets_per_day"
+  ],
+  "base_metrics": {
+    "accuracy": 0.8636039886039886,
+    "macro_f1": 0.8495219591259697,
+    "bot_precision": 0.7699115044247787,
+    "bot_recall": 0.8401287553648069,
+    "confusion_matrix": [
+      [
+        3284,
+        468
+      ],
+      [
+        298,
+        1566
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n       human       0.92      0.88      0.90      3752\n         bot       0.77      0.84      0.80      1864\n\n    accuracy                           0.86      5616\n   macro avg       0.84      0.86      0.85      5616\nweighted avg       0.87      0.86      0.86      5616\n"
+  },
+  "rows": [
+    {
+      "perturbation": "full_graph",
+      "top_features_masked": "",
+      "test_accuracy": 0.8636039886039886,
+      "test_macro_f1": 0.8495219591259697,
+      "test_bot_precision": 0.7699115044247787,
+      "test_bot_recall": 0.8401287553648069,
+      "mean_abs_prob_shift": 0.0,
+      "mean_bot_prob": 0.3890102505683899
+    },
+    {
+      "perturbation": "drop_similar_profile",
+      "top_features_masked": "",
+      "test_accuracy": 0.8094729344729344,
+      "test_macro_f1": 0.768947111977321,
+      "test_bot_precision": 0.7835714285714286,
+      "test_bot_recall": 0.5885193133047211,
+      "mean_abs_prob_shift": 0.1178506463766098,
+      "mean_bot_prob": 0.29661068320274353
+    },
+    {
+      "perturbation": "drop_hashtag_and_url_edges",
+      "top_features_masked": "",
+      "test_accuracy": 0.8338675213675214,
+      "test_macro_f1": 0.8221588960381632,
+      "test_bot_precision": 0.701427953266984,
+      "test_bot_recall": 0.8696351931330472,
+      "mean_abs_prob_shift": 0.06646880507469177,
+      "mean_bot_prob": 0.43034201860427856
+    },
+    {
+      "perturbation": "mask_top_user_features",
+      "top_features_masked": "log1p_favourites_count,log1p_followers_count,average_tweets_per_day",
+      "test_accuracy": 0.7425213675213675,
+      "test_macro_f1": 0.6887640992032009,
+      "test_bot_precision": 0.6473906911142454,
+      "test_bot_recall": 0.4924892703862661,
+      "mean_abs_prob_shift": 0.19934304058551788,
+      "mean_bot_prob": 0.33472320437431335
+    }
+  ]
+}

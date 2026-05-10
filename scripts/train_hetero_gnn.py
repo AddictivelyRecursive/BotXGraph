@@ -329,6 +329,13 @@ def compute_metrics(y_true, y_pred):
     }
 
 
+def compute_metrics_from_probabilities(y_true, bot_probabilities, threshold=0.5):
+    y_true = np.asarray(y_true).astype(int)
+    bot_probabilities = np.asarray(bot_probabilities).astype(float)
+    y_pred = (bot_probabilities >= float(threshold)).astype(int)
+    return compute_metrics(y_true, y_pred)
+
+
 def metrics_to_jsonable(metrics):
     payload = dict(metrics)
     payload["confusion_matrix"] = np.asarray(payload["confusion_matrix"]).tolist()
@@ -352,6 +359,16 @@ def evaluate(model, data, mask):
     y = data["user"].y[mask].cpu().numpy()
     preds = logits[mask].argmax(dim=-1).cpu().numpy()
     return compute_metrics(y, preds)
+
+
+@torch.no_grad()
+def predict_probabilities(model, data, mask):
+    model.eval()
+    logits = model(data)
+    probabilities = torch.softmax(logits, dim=-1)[mask, 1].cpu().numpy()
+    y_true = data["user"].y[mask].cpu().numpy()
+    indices = mask.nonzero(as_tuple=False).view(-1).cpu().numpy()
+    return y_true, probabilities, indices
 
 
 @torch.no_grad()
@@ -587,6 +604,11 @@ def train_model(data, args):
         test_indices=test_indices,
         test_labels=test_y_true,
         test_predictions=test_y_pred,
+        val_indices=final_state["split_payload"]["val"]["indices"],
+        val_labels=final_state["split_payload"]["val"]["labels"],
+        val_predictions=final_state["split_payload"]["val"]["predictions"],
+        val_probabilities=final_state["split_payload"]["val"]["probabilities"],
+        test_probabilities=final_state["split_payload"]["test"]["probabilities"],
         user_logits=final_state["user_logits"],
         user_probabilities=final_state["user_probabilities"],
     )
@@ -622,6 +644,11 @@ def train_model(data, args):
         "test_labels": test_y_true.tolist(),
         "test_predictions": test_y_pred.tolist(),
         "test_indices": test_indices.tolist(),
+        "model": model,
+        "train_mask": train_mask.detach().cpu(),
+        "val_mask": val_mask.detach().cpu(),
+        "test_mask": test_mask.detach().cpu(),
+        "final_state": final_state,
     }
 
 

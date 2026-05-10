@@ -1,0 +1,42 @@
+[
+  {
+    "perturbation": "clean",
+    "test_accuracy": 0.8625356125356125,
+    "test_macro_f1": 0.8484523766912448,
+    "test_bot_precision": 0.7676470588235295,
+    "test_bot_recall": 0.8401287553648069,
+    "mean_abs_prob_shift": 0.0
+  },
+  {
+    "perturbation": "light_rewrite",
+    "test_accuracy": 0.8274572649572649,
+    "test_macro_f1": 0.809482698591796,
+    "test_bot_precision": 0.7207696102614701,
+    "test_bot_recall": 0.7837982832618026,
+    "mean_abs_prob_shift": 0.0889127105474472
+  },
+  {
+    "perturbation": "hashtag_injection",
+    "test_accuracy": 0.8263888888888888,
+    "test_macro_f1": 0.8032753737708618,
+    "test_bot_precision": 0.7432950191570882,
+    "test_bot_recall": 0.7285407725321889,
+    "mean_abs_prob_shift": 0.1111423596739769
+  },
+  {
+    "perturbation": "url_injection",
+    "test_accuracy": 0.8315527065527065,
+    "test_macro_f1": 0.8111975072425861,
+    "test_bot_precision": 0.7405660377358491,
+    "test_bot_recall": 0.7580472103004292,
+    "mean_abs_prob_shift": 0.08889026939868927
+  },
+  {
+    "perturbation": "combined_attack",
+    "test_accuracy": 0.8413461538461539,
+    "test_macro_f1": 0.8198235451385794,
+    "test_bot_precision": 0.7686361126449476,
+    "test_bot_recall": 0.7467811158798283,
+    "mean_abs_prob_shift": 0.09097792208194733
+  }
+]

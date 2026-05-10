@@ -1,0 +1,37 @@
+{
+  "best_threshold_by_val_macro_f1": 0.6,
+  "default_test_metrics": {
+    "accuracy": 0.8627136752136753,
+    "macro_f1": 0.8487751179772336,
+    "bot_precision": 0.7669760625305325,
+    "bot_recall": 0.842274678111588,
+    "confusion_matrix": [
+      [
+        3275,
+        477
+      ],
+      [
+        294,
+        1570
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n       human       0.92      0.87      0.89      3752\n         bot       0.77      0.84      0.80      1864\n\n    accuracy                           0.86      5616\n   macro avg       0.84      0.86      0.85      5616\nweighted avg       0.87      0.86      0.86      5616\n"
+  },
+  "tuned_test_metrics": {
+    "accuracy": 0.8721509971509972,
+    "macro_f1": 0.8553096697334616,
+    "bot_precision": 0.8120915032679739,
+    "bot_recall": 0.799892703862661,
+    "confusion_matrix": [
+      [
+        3407,
+        345
+      ],
+      [
+        373,
+        1491
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n       human       0.90      0.91      0.90      3752\n         bot       0.81      0.80      0.81      1864\n\n    accuracy                           0.87      5616\n   macro avg       0.86      0.85      0.86      5616\nweighted avg       0.87      0.87      0.87      5616\n"
+  }
+}

@@ -1,5 +1,27 @@
-README.md
-/data
+# Python
 __pycache__/
-*.pyc
-reports/artifacts
+*.py[cod]
+*.so
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local logs / scratch files
+run.txt
+after_run.txt
+*.log
+
+# Local data
+data/raw/
+
+# Training artifacts / model weights / checkpoints
+reports/artifacts/
+*.pt
+*.pth
+*.ckpt
+*.npz
