@@ -998,8 +998,8 @@ def parse_args():
         subparser.add_argument("--download", action="store_true")
         subparser.add_argument("--limit", type=int)
         subparser.add_argument("--paper-output-dir", default="reports/paper_experiments")
-        subparser.add_argument("--epochs", type=int, default=120)
-        subparser.add_argument("--patience", type=int, default=20)
+        subparser.add_argument("--epochs", type=int, default=80)
+        subparser.add_argument("--patience", type=int, default=12)
         subparser.add_argument("--eval-every", type=int, default=2)
         subparser.add_argument("--hidden-dim", type=int, default=64)
         subparser.add_argument("--dropout", type=float, default=0.3)
@@ -1026,7 +1026,7 @@ def parse_args():
 
     multiseed = subparsers.add_parser("multiseed")
     add_shared(multiseed)
-    multiseed.add_argument("--seeds", default="42,43,44,45,46")
+    multiseed.add_argument("--seeds", default="42,43,44")
 
     ablations = subparsers.add_parser("ablations")
     add_shared(ablations)

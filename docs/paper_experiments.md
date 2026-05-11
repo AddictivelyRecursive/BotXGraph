@@ -5,7 +5,7 @@ Run these from the repo root.
 ## 1. Multi-seed stability
 
 ```bash
-python3 scripts/run_paper_experiments.py multiseed --seeds 42,43,44,45,46
+python3 scripts/run_paper_experiments.py multiseed
 ```
 
 ## 2. Ablation study
@@ -13,6 +13,10 @@ python3 scripts/run_paper_experiments.py multiseed --seeds 42,43,44,45,46
 ```bash
 python3 scripts/run_paper_experiments.py ablations
 ```
+
+Current defaults are tuned for faster workshop runs:
+- `multiseed` defaults to seeds `42,43,44`
+- all paper experiments default to `--epochs 80 --patience 12`
 
 ## 3. Explanation faithfulness
 

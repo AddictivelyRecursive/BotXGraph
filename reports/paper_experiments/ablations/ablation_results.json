@@ -1,0 +1,74 @@
+[
+  {
+    "variant": "profile_only",
+    "best_epoch": 80,
+    "val_accuracy": 0.8500712250712251,
+    "val_macro_f1": 0.8340695742005031,
+    "val_bot_precision": 0.7544820717131474,
+    "val_bot_recall": 0.8127682403433476,
+    "test_accuracy": 0.8502492877492878,
+    "test_macro_f1": 0.8354349133984322,
+    "test_bot_precision": 0.7474600870827286,
+    "test_bot_recall": 0.828862660944206
+  },
+  {
+    "variant": "profile_plus_text",
+    "best_epoch": 80,
+    "val_accuracy": 0.8457977207977208,
+    "val_macro_f1": 0.8312293637121144,
+    "val_bot_precision": 0.7373929590865842,
+    "val_bot_recall": 0.8315450643776824,
+    "test_accuracy": 0.8459757834757835,
+    "test_macro_f1": 0.8317120097874918,
+    "test_bot_precision": 0.7359470949456779,
+    "test_bot_recall": 0.8358369098712446
+  },
+  {
+    "variant": "plus_similar_profile",
+    "best_epoch": 80,
+    "val_accuracy": 0.8520299145299145,
+    "val_macro_f1": 0.837657456557096,
+    "val_bot_precision": 0.7481979817395483,
+    "val_bot_recall": 0.8353004291845494,
+    "test_accuracy": 0.854522792022792,
+    "test_macro_f1": 0.84065073437493,
+    "test_bot_precision": 0.7498806682577566,
+    "test_bot_recall": 0.8428111587982833
+  },
+  {
+    "variant": "plus_co_hashtag",
+    "best_epoch": 80,
+    "val_accuracy": 0.8548789173789174,
+    "val_macro_f1": 0.839915314297494,
+    "val_bot_precision": 0.7577395577395577,
+    "val_bot_recall": 0.8272532188841202,
+    "test_accuracy": 0.8570156695156695,
+    "test_macro_f1": 0.8424610524416128,
+    "test_bot_precision": 0.7594132029339853,
+    "test_bot_recall": 0.8331545064377682
+  },
+  {
+    "variant": "plus_co_url",
+    "best_epoch": 80,
+    "val_accuracy": 0.8520299145299145,
+    "val_macro_f1": 0.8370454362853884,
+    "val_bot_precision": 0.7520741825280625,
+    "val_bot_recall": 0.8267167381974249,
+    "test_accuracy": 0.8564814814814815,
+    "test_macro_f1": 0.8420415900865194,
+    "test_bot_precision": 0.7575462512171373,
+    "test_bot_recall": 0.8347639484978541
+  },
+  {
+    "variant": "full",
+    "best_epoch": 80,
+    "val_accuracy": 0.8509615384615384,
+    "val_macro_f1": 0.8361405715917131,
+    "val_bot_precision": 0.7489093553078041,
+    "val_bot_recall": 0.828862660944206,
+    "test_accuracy": 0.8554131054131054,
+    "test_macro_f1": 0.8410160930959404,
+    "test_bot_precision": 0.7550921435499515,
+    "test_bot_recall": 0.8353004291845494
+  }
+]
